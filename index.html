@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <style>
+      .body {
+        font-family: courier;
+        margin: auto;
+        text-align: center;
+        width: 60%
+      }
+
+      .inputs {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .center {
+        justify-content: center
+      }
+
+      input, label {
+        display: block;
+        padding: 20px;
+      }
+
+      input {
+        width: 5vw;
+        text-align: center;
+        border: 1px solid #CCC;
+      }
+
+      .results-table {
+        margin: 25px auto;
+        border-spacing: 0;
+        border-collapse: collapse;
+      }
+
+      .results-table th, td {
+        padding: 7px 20px;
+        border: 1px solid #DDD;
+      }
+
+      .inputgroup {
+        display: flex;
+        margin: 5px 0;
+      }
+
+      .inputgroup button {
+        padding: 0 25px;
+      }
+    </style>
+    <script>
+      function updateTable () {
+        const sideA = document.getElementById('sideANumberOfUnits')
+        const sideB = document.getElementById('sideBNumberOfUnits')
+        let sideANumberOfUnitsRemaining = Number(sideA.value)
+        let sideBNumberOfUnitsRemaining = Number(sideB.value)
+        const tableBody = document.getElementById('order')
+        // Reset Table
+        const rowsToRemove = tableBody.rows.length
+        for (let i = 0; i < rowsToRemove; i++) {
+          tableBody.rows[0].remove()
+        }
+
+        let moveNumber = 1
+        do {
+          const newRow = tableBody.insertRow(-1)
+
+          const newMoveNumberCell = newRow.insertCell(0)
+          const newMoveNumber = document.createTextNode(moveNumber)
+          newMoveNumberCell.appendChild(newMoveNumber)
+
+          const sideANumberOfUnitsToMove = Math.max(1, Math.floor(sideANumberOfUnitsRemaining/sideBNumberOfUnitsRemaining))
+          const newSideACell = newRow.insertCell(1)
+          const newSideAValue = document.createTextNode(sideANumberOfUnitsToMove)
+          newSideACell.appendChild(newSideAValue)
+
+          const sideBNumberOfUnitsToMove = Math.max(1, Math.floor(sideBNumberOfUnitsRemaining/sideANumberOfUnitsRemaining))
+          const newSideBCell = newRow.insertCell(2)
+          const newSideBValue = document.createTextNode(sideBNumberOfUnitsToMove)
+          newSideBCell.appendChild(newSideBValue)
+
+          sideANumberOfUnitsRemaining -= sideANumberOfUnitsToMove
+          sideBNumberOfUnitsRemaining -= sideBNumberOfUnitsToMove
+          moveNumber += 1
+        } while (sideANumberOfUnitsRemaining > 0 && sideBNumberOfUnitsRemaining > 0)
+      }
+
+      function updateInput () {
+        const inputs = this.parentElement.getElementsByTagName('INPUT')
+        const input = inputs[0]
+        if (input) {
+          if (this.innerHTML === "-") {
+            input.value = Number(input.value) - 1
+          } else {
+            input.value = Number(input.value) + 1
+          }
+        }
+        updateTable()
+      }
+
+      window.addEventListener('load', () => {
+        updateTable()
+        const inputs = document.getElementsByTagName('INPUT')
+        for (const input of inputs) {
+          input.addEventListener('change', updateTable)
+        }
+
+        const buttons = document.getElementsByTagName('BUTTON')
+        for (const button of buttons) {
+          button.addEventListener('click', updateInput)
+        }
+      })
+    </script>
+  </head>
+  <body class="body">
+    <h1 class="title">Unequal Number Of Units</h1>
+    <div>
+      <div class="inputs">
+        <label>
+          Side A
+          <div class="inputgroup">
+            <button>-</button>
+            <input id="sideANumberOfUnits" type="numeric" value="4" />
+            <button>+</button>
+          </div>
+        </label>
+        <label>
+          Side B
+          <div class="inputgroup">
+            <button>-</button>
+            <input id="sideBNumberOfUnits" type="numeric" value="4" />
+            <button>+</button>
+          </div>
+        </label>
+      </div>
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Move Number</th>
+            <th>Side A</th>
+            <th>Side B</th>
+          </tr>
+        </thead>
+        <tbody id="order">
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
