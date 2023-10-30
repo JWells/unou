@@ -42,11 +42,12 @@
 
       .inputgroup {
         display: flex;
+        justify-content: center;
         margin: 5px 0;
       }
 
       .inputgroup button {
-        padding: 0 25px;
+        padding: 25px;
       }
     </style>
     <script>
@@ -55,7 +56,7 @@
         const sideB = document.getElementById('sideBNumberOfUnits')
         let sideANumberOfUnitsRemaining = Number(sideA.value)
         let sideBNumberOfUnitsRemaining = Number(sideB.value)
-        const tableBody = document.getElementById('order')
+        const tableBody = document.getElementById('unitOrder')
         // Reset Table
         const rowsToRemove = tableBody.rows.length
         for (let i = 0; i < rowsToRemove; i++) {
@@ -99,6 +100,22 @@
         updateTable()
       }
 
+      function turnEnd () {
+        const sideA = document.getElementById('sideANumberOfUnits')
+        const sideB = document.getElementById('sideBNumberOfUnits')
+        const tableBody = document.getElementById('turnLog')
+        const newRow = tableBody.insertRow(-1)
+        const newTurnNumberCell = newRow.insertCell(0)
+        const newTurnNumber = document.createTextNode(tableBody.rows.length)
+        newTurnNumberCell.appendChild(newTurnNumber)
+        const newSideACell = newRow.insertCell(1)
+        const newSideAValue = document.createTextNode(sideA.value)
+        newSideACell.appendChild(newSideAValue)
+        const newSideBCell = newRow.insertCell(1)
+        const newSideBValue = document.createTextNode(sideB.value)
+        newSideBCell.appendChild(newSideBValue)
+      }
+
       window.addEventListener('load', () => {
         updateTable()
         const inputs = document.getElementsByTagName('INPUT')
@@ -106,17 +123,21 @@
           input.addEventListener('change', updateTable)
         }
 
-        const buttons = document.getElementsByTagName('BUTTON')
+        const unitCounts = document.getElementById('unitCounts')
+        const buttons = unitCounts.getElementsByTagName('BUTTON')
         for (const button of buttons) {
           button.addEventListener('click', updateInput)
         }
+
+        const turnEndButton = document.getElementById('turnEnd')
+        turnEndButton.addEventListener('click', turnEnd)
       })
     </script>
   </head>
   <body class="body">
-    <h1 class="title">Unequal Number Of Units</h1>
+    <h1>Unequal Number Of Units</h1>
     <div>
-      <div class="inputs">
+      <div id="unitCounts" class="inputs">
         <label>
           Side A
           <div class="inputgroup">
@@ -134,6 +155,9 @@
           </div>
         </label>
       </div>
+      <div id="turnEnd" class="inputgroup">
+        <button>Complete Turn</button>
+      </div>
       <table class="results-table">
         <thead>
           <tr>
@@ -142,7 +166,20 @@
             <th>Side B</th>
           </tr>
         </thead>
-        <tbody id="order">
+        <tbody id="unitOrder">
+        </tbody>
+      </table>
+      <hr />
+      <h2>Turn Log</h2>
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Turn</th>
+            <th>Side A Units</th>
+            <th>Side B Units</th>
+          </tr>
+        </thead>
+        <tbody id="turnLog">
         </tbody>
       </table>
     </div>
