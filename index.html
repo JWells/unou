@@ -14,10 +14,6 @@
         justify-content: space-between;
       }
 
-      .center {
-        justify-content: center
-      }
-
       input, label {
         display: block;
         padding: 20px;
@@ -52,8 +48,8 @@
     </style>
     <script>
       function updateTable () {
-        const sideA = document.getElementById('sideANumberOfUnits')
-        const sideB = document.getElementById('sideBNumberOfUnits')
+        const sideA = document.getElementById('a')
+        const sideB = document.getElementById('b')
         let sideANumberOfUnitsRemaining = Number(sideA.value)
         let sideBNumberOfUnitsRemaining = Number(sideB.value)
         const tableBody = document.getElementById('unitOrder')
@@ -101,8 +97,8 @@
       }
 
       function turnEnd () {
-        const sideA = document.getElementById('sideANumberOfUnits')
-        const sideB = document.getElementById('sideBNumberOfUnits')
+        const sideA = document.getElementById('a')
+        const sideB = document.getElementById('b')
         const tableBody = document.getElementById('turnLog')
         const newRow = tableBody.insertRow(-1)
         const newTurnNumberCell = newRow.insertCell(0)
@@ -117,6 +113,16 @@
       }
 
       window.addEventListener('load', () => {
+        const { searchParams } = new URL(window.location.href)
+        const sides = ['a', 'b']
+        for (const side of sides) {
+          const paramValue = searchParams.get(side)
+          const inputElement = document.getElementById(side)
+          if (inputElement && paramValue) {
+            inputElement.value = paramValue
+          }
+        }
+
         updateTable()
         const inputs = document.getElementsByTagName('INPUT')
         for (const input of inputs) {
@@ -142,7 +148,7 @@
           Side A
           <div class="inputgroup">
             <button>-</button>
-            <input id="sideANumberOfUnits" type="numeric" value="4" />
+            <input id="a" type="numeric" value="4" />
             <button>+</button>
           </div>
         </label>
@@ -150,7 +156,7 @@
           Side B
           <div class="inputgroup">
             <button>-</button>
-            <input id="sideBNumberOfUnits" type="numeric" value="4" />
+            <input id="b" type="numeric" value="4" />
             <button>+</button>
           </div>
         </label>
